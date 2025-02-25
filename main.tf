@@ -16,11 +16,7 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
   }
 
   initialization {
-    user_account {
-      # do not use this in production, configure your own ssh key instead!
-      username = "proxmox"
-      password = "password"
-    }
+    user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
     dns {
       servers = ["8.8.8.8", "1.1.1.1"]
     }
@@ -79,4 +75,31 @@ resource "proxmox_virtual_environment_download_file" "ubuntu_cloud_image" {
   node_name    = "proxmox"
   url          = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
 }
+# Resource for cloud-init features
+resource "proxmox_virtual_environment_file" "cloud_config" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = "pve"
 
+  source_raw {
+    data = <<-EOF
+    #cloud-config
+    chpasswd:
+      list: |
+        ubuntu:example
+      expire: false
+    packages:
+      - qemu-guest-agent
+    users:
+      - default
+      - name: proxmox
+        groups: sudo
+        shell: /bin/bash
+        ssh-authorized-keys:
+          - ${trimspace(tls_private_key.example.public_key_openssh)}
+        sudo: ALL=(ALL) NOPASSWD:ALL
+    EOF
+
+    file_name = "example.cloud-config.yaml"
+  }
+}
