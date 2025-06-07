@@ -16,3 +16,10 @@ variable "proxmox_dc_pass" {
   default = "9iNDZULn}f;4TT3"
   type = string
 }
+variable "proxmox_lxc_ip" {
+  type = string
+}
+variable "proxmox_lxc_mem" {
+  default = "512"
+  type = string
+}
