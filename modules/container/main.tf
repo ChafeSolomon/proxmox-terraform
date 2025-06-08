@@ -63,7 +63,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDjk2nLGrl5JdbNDIpLcp1mDP+RX7T+S16iLQ2X1T2W
     connection {
       type        = "ssh"
       user        = "root" # Assuming root access or a user with sudo privileges
-      private_key = file("~/.ssh/id_rsa") # Path to your SSH private key on the Terraform host
+      private_key = file("${var.ssh_key}") # Path to your SSH private key on the Terraform host
       host        = var.proxmox_lxc_ip
       timeout     = "5m" # Increase timeout if scripts are long or connection is slow
     }

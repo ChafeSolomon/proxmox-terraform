@@ -23,3 +23,8 @@ variable "proxmox_lxc_mem" {
   default = "512"
   type = string
 }
+variable "ssh_key" {
+  description = "Path to the SSH private key file on the Terraform host for connecting to the LXC container."
+  type        = string
+  sensitive   = true # Highly recommended for SSH keys to prevent logging its value
+}
